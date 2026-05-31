@@ -1,0 +1,80 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+model Movie {
+  id String @id @default(uuid())
+
+  title       String
+  description String?
+  releaseYear Int     @map("release_year")
+  rating      Float   @default(0.0)
+  isAvailable Boolean @default(false) @map("is_available")
+
+  genre Genre @default(DRAMA)
+
+  // relation
+  reviews  Review[]     @relation("movie_reviews")
+  actors   Actor[]      @relation("movie_actor")
+  poster   MoviePoster? @relation("movie_poster", fields: [posterId], references: [id], onDelete: Cascade)
+  posterId String?      @unique @map("poster_id")
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  // составной индекс для фильтра по нескольким полям
+  // select * from movie where title = '123' and release_year = 2000
+  @@index([releaseYear, title]) // будет работать быстрее
+  // @@index([releaseYear]) / where releaseYear = 2000 будет работать быстрее
+  @@map("movies")
+}
+model MoviePoster {
+  id String @id @default(uuid())
+
+  // relation
+  url   String
+  movie Movie? @relation("movie_poster")
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@map("movie_posters")
+}
+model Review {
+  id      String  @id @default(uuid())
+  text    String
+  rating  Decimal @default(0.0)
+  // relation
+  movie   Movie   @relation("movie_reviews", fields: [movieId], references: [id], onDelete: Cascade)
+  movieId String  @map("movie_id")
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@map("reviews")
+}
+model Actor {
+  id     String  @id @default(uuid())
+  name   String
+  // relation
+  movies Movie[] @relation("movie_actor")
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@map("actors")
+}
+enum Genre {
+  ACTION
+  COMEDY
+  DRAMA
+  HORROR
+
+  @@map("enum_genres")
+}
