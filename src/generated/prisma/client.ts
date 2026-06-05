@@ -27,8 +27,8 @@ export * from "./enums"
  * @example
  * ```
  * const prisma = new PrismaClient()
- * // Fetch zero or more Movies
- * const movies = await prisma.movie.findMany()
+ * // Fetch zero or more Users
+ * const users = await prisma.user.findMany()
  * ```
  * 
  * Read more in our [docs](https://www.prisma.io/docs/reference/tools-and-interfaces/prisma-client).
@@ -43,22 +43,7 @@ path.join(__dirname, "libquery_engine-darwin-arm64.dylib.node")
 path.join(process.cwd(), "src/generated/prisma/libquery_engine-darwin-arm64.dylib.node")
 
 /**
- * Model Movie
+ * Model User
  * 
  */
-export type Movie = Prisma.MovieModel
-/**
- * Model MoviePoster
- * 
- */
-export type MoviePoster = Prisma.MoviePosterModel
-/**
- * Model Review
- * 
- */
-export type Review = Prisma.ReviewModel
-/**
- * Model Actor
- * 
- */
-export type Actor = Prisma.ActorModel
+export type User = Prisma.UserModel
