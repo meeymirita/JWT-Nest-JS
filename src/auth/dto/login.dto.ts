@@ -1,17 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import {IsString,IsNotEmpty, MaxLength, IsEmail, MinLength } from 'class-validator';
-export class RegisterRequest {
-    @ApiProperty({ 
-        description: 'Имя пользователя',
-        example: 'John Doe',
-        required: true,
-    })
-    @IsString({message: 'Имя должно быть строкой'})
-    @IsNotEmpty({message: 'Обязательно для заполнения'})
-    @MinLength(3, { message: 'Имя не должно быть меньше 3 символов'})
-    @MaxLength(50, { message: 'Имя не должно быть больше 50 символов'})
-    name!: string;
-
+export class LoginRequest {
     
     @ApiProperty({ 
         description: 'Email пользователя',

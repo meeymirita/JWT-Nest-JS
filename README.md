@@ -1,98 +1,425 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="120" alt="Nest Logo" /></a>
-</p>
+# NestJS Course — Auth API
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+REST API на NestJS с регистрацией, входом, JWT-авторизацией и документацией Swagger.
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg" alt="Donate us"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow" alt="Follow us on Twitter"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+---
 
-## Description
+## Содержание
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+1. [Быстрый старт](#быстрый-старт)
+2. [Стек технологий](#стек-технологий)
+3. [Структура проекта](#структура-проекта)
+4. [Архитектура](#архитектура)
+5. [Описание модулей и файлов](#описание-модулей-и-файлов)
+6. [API эндпоинты](#api-эндпоинты)
+7. [Поток авторизации](#поток-авторизации)
+8. [Полезные команды](#полезные-команды)
 
-## Project setup
+---
+
+## Быстрый старт
+
+### 1. Установка зависимостей
 
 ```bash
-$ npm install
+npm install
 ```
 
-## Compile and run the project
+### 2. Переменные окружения
+
+Скопируйте `.env.example` в `.env` и заполните значения:
 
 ```bash
-# development
-$ npm run start
-
-# watch mode
-$ npm run start:dev
-
-# production mode
-$ npm run start:prod
+cp .env.example .env
 ```
 
-## Run tests
+```env
+DATABASE_URL="postgresql://user:password@localhost:5432/course_db?schema=public"
+NODE_ENV=development
+JWT_SECRET=your-super-secret-key-min-32-chars
+JWT_ACCESS_TOKEN_TTL=15m
+JWT_REFRESH_TOKEN_TTL=7d
+COOKIE_DOMAIN=localhost
+PORT=3000
+```
+
+### 3. База данных
 
 ```bash
-# unit tests
-$ npm run test
-
-# e2e tests
-$ npm run test:e2e
-
-# test coverage
-$ npm run test:cov
+npx prisma generate
+npx prisma migrate dev --name init
 ```
 
-## Deployment
-
-When you're ready to deploy your NestJS application to production, there are some key steps you can take to ensure it runs as efficiently as possible. Check out the [deployment documentation](https://docs.nestjs.com/deployment) for more information.
-
-If you are looking for a cloud-based platform to deploy your NestJS application, check out [Mau](https://mau.nestjs.com), our official platform for deploying NestJS applications on AWS. Mau makes deployment straightforward and fast, requiring just a few simple steps:
+### 4. Запуск
 
 ```bash
-$ npm install -g @nestjs/mau
-$ mau deploy
+npm run start:dev   # режим разработки
+npm run build       # сборка
+npm run start:prod  # продакшен
 ```
 
-With Mau, you can deploy your application in just a few clicks, allowing you to focus on building features rather than managing infrastructure.
+### 5. Swagger
 
-## Resources
+- UI: `http://localhost:3000/api`
+- JSON: `http://localhost:3000/api-json`
 
-Check out a few resources that may come in handy when working with NestJS:
+---
 
-- Visit the [NestJS Documentation](https://docs.nestjs.com) to learn more about the framework.
-- For questions and support, please visit our [Discord channel](https://discord.gg/G7Qnnhy).
-- To dive deeper and get more hands-on experience, check out our official video [courses](https://courses.nestjs.com/).
-- Deploy your application to AWS with the help of [NestJS Mau](https://mau.nestjs.com) in just a few clicks.
-- Visualize your application graph and interact with the NestJS application in real-time using [NestJS Devtools](https://devtools.nestjs.com).
-- Need help with your project (part-time to full-time)? Check out our official [enterprise support](https://enterprise.nestjs.com).
-- To stay in the loop and get updates, follow us on [X](https://x.com/nestframework) and [LinkedIn](https://linkedin.com/company/nestjs).
-- Looking for a job, or have a job to offer? Check out our official [Jobs board](https://jobs.nestjs.com).
+## Стек технологий
 
-## Support
+| Пакет | Назначение |
+|---|---|
+| **@nestjs/core, common, platform-express** | Фреймворк NestJS |
+| **@nestjs/config** | Загрузка переменных из `.env` |
+| **@nestjs/jwt** | Создание и проверка JWT-токенов |
+| **@nestjs/passport + passport-jwt** | Авторизация через Bearer-токен |
+| **@nestjs/swagger** | OpenAPI/Swagger документация |
+| **prisma + @prisma/client** | ORM для PostgreSQL |
+| **class-validator + class-transformer** | Валидация входящих данных |
+| **argon2** | Хеширование паролей |
+| **cookie-parser** | Чтение cookies из HTTP-запросов |
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
+---
 
-## Stay in touch
+## Структура проекта
 
-- Author - [Kamil Myśliwiec](https://twitter.com/kammysliwiec)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
+```
+course/
+├── prisma/
+│   └── schema.prisma              # Схема БД
+├── src/
+│   ├── main.ts                    # Точка входа
+│   ├── app.module.ts              # Корневой модуль
+│   ├── app.controller.ts          # Тестовый контроллер (Hello World)
+│   │
+│   ├── auth/
+│   │   ├── auth.module.ts
+│   │   ├── auth.controller.ts     # register, login, refresh, logout, me
+│   │   ├── auth.service.ts        # Бизнес-логика авторизации
+│   │   ├── dto/                   # DTO для валидации и Swagger
+│   │   ├── decorators/            # @Authorization(), @Authorized()
+│   │   ├── guards/                # JwtGuard
+│   │   ├── strategies/            # JwtStrategy
+│   │   └── interfaces/            # JwtPayload, SafeUser
+│   │
+│   ├── prisma/
+│   │   ├── prisma.module.ts
+│   │   └── prisma.service.ts
+│   │
+│   ├── config/                    # JWT, Swagger
+│   ├── utils/                     # Вспомогательные функции
+│   └── generated/prisma/          # Автогенерируемый Prisma Client
+│
+├── .env.example
+└── package.json
+```
 
-## License
+---
 
-Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
+## Архитектура
+
+```
+HTTP-запрос
+    │
+    ▼
+main.ts  ── cookie-parser, ValidationPipe, Swagger
+    │
+    ▼
+AppModule  ── ConfigModule, PrismaModule, AuthModule
+    │
+    ▼
+AuthController  ── принимает запрос, вызывает AuthService
+    │
+    ├── @Authorization() → JwtGuard → JwtStrategy → AuthService.validate()
+    └── @Authorized()    → достаёт user из request
+    │
+    ▼
+AuthService  ── register / login / refresh / logout
+    │
+    ▼
+PrismaService  ── запросы к PostgreSQL (таблица users)
+```
+
+Приложение построено из **модулей**. Каждый модуль объединяет контроллеры, сервисы, провайдеры и импорты других модулей.
+
+---
+
+## Описание модулей и файлов
+
+### `src/main.ts`
+
+Точка входа приложения:
+
+```typescript
+const app = await NestFactory.create(AppModule);
+app.use(cookieParser.default());
+app.useGlobalPipes(new ValidationPipe());
+setupSwagger(app);
+await app.listen(3000);
+```
+
+- **ValidationPipe** — автоматически валидирует все `@Body()` DTO через `class-validator`
+- **cookieParser** — нужен для чтения `refreshToken` из cookie
+
+---
+
+### `src/app.module.ts`
+
+Корневой модуль, подключает:
+
+- `ConfigModule.forRoot({ isGlobal: true })` — `.env` доступен во всех модулях
+- `PrismaModule` — работа с БД
+- `AuthModule` — авторизация
+
+---
+
+### `src/prisma/`
+
+**`prisma/schema.prisma`** — модель пользователя:
+
+```prisma
+model User {
+  id        String   @id @default(uuid())
+  name      String
+  email     String   @unique
+  password  String
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt      @map("updated_at")
+  @@map("users")
+}
+```
+
+**`prisma.service.ts`** — обёртка над Prisma Client с подключением/отключением от БД при старте/остановке приложения.
+
+**`prisma.module.ts`** — помечен `@Global()`, `PrismaService` доступен во всех модулях без явного импорта.
+
+---
+
+### `src/auth/dto/`
+
+| Файл | Назначение |
+|---|---|
+| `register.dto.ts` | Валидация `{ name, email, password }` при регистрации |
+| `login.dto.ts` | Валидация `{ email, password }` при входе |
+| `auth.dto.ts` | Swagger-описание ответа `{ accessToken }` |
+| `user.dto.ts` | Swagger-описание объекта пользователя |
+
+---
+
+### `src/auth/auth.service.ts`
+
+| Метод | Описание |
+|---|---|
+| `register()` | Проверяет email → хеширует пароль (argon2) → создаёт пользователя → выдаёт токены |
+| `login()` | Проверяет email и пароль → выдаёт токены |
+| `refresh()` | Проверяет refreshToken из cookie → выдаёт новую пару токенов |
+| `logout()` | Очищает cookie refreshToken |
+| `validate()` | Загружает пользователя без поля `password` (для JWT-стратегии) |
+
+**Схема токенов:**
+
+- **Access Token** — короткоживущий (`JWT_ACCESS_TOKEN_TTL`), передаётся в заголовке `Authorization: Bearer <token>`
+- **Refresh Token** — долгоживущий (`JWT_REFRESH_TOKEN_TTL`), хранится в **httpOnly cookie**
+
+Срок жизни cookie синхронизирован с `exp` refresh-токена.
+
+---
+
+### `src/auth/auth.controller.ts`
+
+| Метод | URL | Auth | Описание |
+|---|---|---|---|
+| POST | `/auth/register` | — | Регистрация |
+| POST | `/auth/login` | — | Вход |
+| POST | `/auth/refresh` | cookie | Обновление токенов |
+| POST | `/auth/logout` | cookie | Выход |
+| GET | `/auth/me` | Bearer JWT | Текущий пользователь |
+
+- **`@Res({ passthrough: true })`** — позволяет сервису записать cookie, сохраняя автоматический JSON-ответ NestJS
+- **`@Authorization()`** — включает JwtGuard на защищённых роутах
+- **`@Authorized()`** — достаёт `user` из request (положен Passport после проверки JWT)
+
+---
+
+### `src/auth/strategies/jwt.strategy.ts`
+
+Passport-стратегия для JWT:
+
+```typescript
+super({
+  jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
+  secretOrKey: configService.getOrThrow('JWT_SECRET'),
+  algorithms: ['HS256'],
+});
+
+async validate(payload: JwtPayload) {
+  return await this.authService.validate(payload.userId);
+}
+```
+
+Passport извлекает Bearer-токен, проверяет подпись и срок, вызывает `validate()`, результат записывает в `request.user`.
+
+---
+
+### `src/auth/guards/auth.guard.ts`
+
+```typescript
+@Injectable()
+export class JwtGuard extends AuthGuard('jwt') {}
+```
+
+При невалидном токене автоматически возвращается **401 Unauthorized**.
+
+---
+
+### `src/auth/decorators/`
+
+**`@Authorization()`** — обёртка над `UseGuards(JwtGuard)`, помечает роут как защищённый.
+
+**`@Authorized()`** — параметр-декоратор, возвращает текущего пользователя из request. Можно передать поле: `@Authorized('id')`.
+
+---
+
+### `src/config/jwt.config.ts`
+
+Конфигурация JwtModule:
+
+```typescript
+export function getJwtConfig(configService: ConfigService): JwtModuleOptions {
+  return {
+    secret: configService.getOrThrow('JWT_SECRET'),
+    signOptions: { algorithm: 'HS256' },
+    verifyOptions: { algorithms: ['HS256'], ignoreExpiration: false },
+  };
+}
+```
+
+---
+
+### `src/config/swagger.config.ts` + `src/utils/swagger.util.ts`
+
+Настройка Swagger UI на `/api` с поддержкой Bearer Auth.
+
+---
+
+### `src/utils/is-dev-utils.ts`
+
+Определяет dev-режим по `NODE_ENV`. Используется для настройки cookie:
+
+- dev: `secure: false`, `sameSite: 'lax'`
+- prod: `secure: true`, `sameSite: 'strict'`
+
+---
+
+## API эндпоинты
+
+### POST `/auth/register`
+
+**Тело:**
+```json
+{
+  "name": "John Doe",
+  "email": "john@example.com",
+  "password": "password123"
+}
+```
+
+**Ответ (201):**
+```json
+{ "accessToken": "eyJhbG..." }
+```
+
++ cookie `refreshToken` (httpOnly)
+
+---
+
+### POST `/auth/login`
+
+**Тело:**
+```json
+{
+  "email": "john@example.com",
+  "password": "password123"
+}
+```
+
+**Ответ (200):** `{ "accessToken": "..." }` + cookie
+
+**Ошибка (401):** `{ "message": "Неверный email или пароль" }`
+
+---
+
+### POST `/auth/refresh`
+
+Без тела. Берёт `refreshToken` из cookie.
+
+**Ответ (200):** новый `{ "accessToken": "..." }` + обновлённая cookie
+
+---
+
+### POST `/auth/logout`
+
+**Ответ (200):** `{ "message": "Вы успешно вышли из системы" }`
+
+Cookie `refreshToken` очищается.
+
+---
+
+### GET `/auth/me`
+
+**Заголовок:** `Authorization: Bearer <accessToken>`
+
+**Ответ (200):**
+```json
+{
+  "id": "uuid",
+  "name": "John Doe",
+  "email": "john@example.com",
+  "createdAt": "2026-01-01T00:00:00.000Z",
+  "updatedAt": "2026-01-01T00:00:00.000Z"
+}
+```
+
+Поле `password` в ответ не попадает.
+
+---
+
+## Поток авторизации
+
+```
+1. Регистрация / Вход
+   Client → POST /auth/register или /auth/login
+   Server → проверяет данные → создаёт JWT
+   Server → accessToken в JSON + refreshToken в httpOnly cookie
+
+2. Защищённый запрос
+   Client → GET /auth/me + Authorization: Bearer <accessToken>
+   Server → JwtGuard → JwtStrategy → validate(userId) → request.user
+   Server → возвращает данные пользователя
+
+3. Обновление токена (access истёк)
+   Client → POST /auth/refresh (cookie отправляется автоматически)
+   Server → проверяет refreshToken → выдаёт новую пару
+
+4. Выход
+   Client → POST /auth/logout
+   Server → удаляет cookie
+```
+
+---
+
+## Полезные команды
+
+```bash
+npx prisma studio          # GUI для просмотра БД
+npx prisma generate        # пересоздать клиент после изменения schema
+npm run lint               # линтер
+npm run test               # unit-тесты
+npm run test:e2e           # e2e-тесты
+```
+
+---
+
+## Лицензия
+
+UNLICENSED — учебный проект.
